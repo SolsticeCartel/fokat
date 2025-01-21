@@ -19,6 +19,7 @@ import {
   arrayRemove
 } from 'firebase/firestore';
 import { MessageCircle, Home, Trash2, LogOut, Info } from 'lucide-react';
+import CryptoJS from 'crypto-js';
 
 export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
@@ -36,6 +37,7 @@ export default function ChatRoom() {
   const navigate = useNavigate();
   const [showInfo, setShowInfo] = useState(false);
   const [groupInfo, setGroupInfo] = useState(null);
+  const [decryptedMessages, setDecryptedMessages] = useState([]);
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -137,6 +139,15 @@ export default function ChatRoom() {
         ...doc.data()
       }));
       setMessages(newMessages);
+
+      // Decrypt messages if we have the group password
+      if (groupInfo?.password) {
+        const decrypted = newMessages.map(msg => ({
+          ...msg,
+          text: msg.type === 'system' ? msg.text : decryptMessage(msg.text, groupInfo.password)
+        }));
+        setDecryptedMessages(decrypted);
+      }
     }, (error) => {
       if (error.code === 'permission-denied') {
         setError('This chat has been deleted by the admin');
@@ -151,7 +162,7 @@ export default function ChatRoom() {
       unsubscribeMessages();
       setIsFirstLoad(true); // Reset first load flag when component unmounts
     };
-  }, [groupId, currentUser.uid, navigate]);
+  }, [groupId, currentUser.uid, navigate, groupInfo?.password]);
 
   // Add this new effect for fetching member profiles when modal is opened
   useEffect(() => {
@@ -219,13 +230,30 @@ export default function ChatRoom() {
     return () => unsubscribeGroupMembers();
   }, [groupId]);
 
+  // Add encryption/decryption functions
+  const encryptMessage = (message, password) => {
+    return CryptoJS.AES.encrypt(message, password).toString();
+  };
+
+  const decryptMessage = (encryptedMessage, password) => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(encryptedMessage, password);
+      return bytes.toString(CryptoJS.enc.Utf8);
+    } catch (error) {
+      console.error('Failed to decrypt message');
+      return 'Message cannot be decrypted';
+    }
+  };
+
   const handleSubmit = async (e) => {
-    e?.preventDefault(); // Make preventDefault optional since we might call this directly
+    e?.preventDefault();
     if (!newMessage.trim()) return;
 
     try {
+      const encryptedText = encryptMessage(newMessage.trim(), groupInfo.password);
+      
       await addDoc(collection(db, 'groups', groupId, 'messages'), {
-        text: newMessage,
+        text: encryptedText,
         createdAt: serverTimestamp(),
         uid: currentUser.uid,
         userName: userProfile.fullName,
@@ -421,7 +449,7 @@ export default function ChatRoom() {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-6 scrollbar-hide relative flex flex-col justify-end">
         <div className="space-y-4">
-          {messages.map((message) => {
+          {decryptedMessages.map((message) => {
             // Handle system messages
             if (message.type === 'system') {
               return (
