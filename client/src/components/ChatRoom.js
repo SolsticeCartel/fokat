@@ -530,24 +530,26 @@ export default function ChatRoom() {
             <div className="text-red-500 mb-4 text-center">{error}</div>
           )}
           <div className="flex space-x-4">
-            <div className="relative" ref={emojiPickerRef}>
-              <button
-                type="button"
-                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                className="p-2 hover:bg-accent rounded-full transition-colors"
-              >
-                <Smile className="w-6 h-6" />
-              </button>
-              {showEmojiPicker && (
-                <div className="absolute bottom-full left-0 mb-2">
-                  <EmojiPicker
-                    onEmojiClick={onEmojiClick}
-                    width={300}
-                    height={400}
-                  />
-                </div>
-              )}
-            </div>
+            {!isMobile && (
+              <div className="relative" ref={emojiPickerRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="p-2 hover:bg-accent rounded-full transition-colors"
+                >
+                  <Smile className="w-6 h-6" />
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-full left-0 mb-2">
+                    <EmojiPicker
+                      onEmojiClick={onEmojiClick}
+                      width={300}
+                      height={400}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
             <textarea
               ref={inputRef}
               value={newMessage}
