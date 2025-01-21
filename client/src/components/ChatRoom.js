@@ -18,8 +18,9 @@ import {
   updateDoc,
   arrayRemove
 } from 'firebase/firestore';
-import { MessageCircle, Home, Trash2, LogOut, Info } from 'lucide-react';
+import { MessageCircle, Home, Trash2, LogOut, Info, Smile } from 'lucide-react';
 import CryptoJS from 'crypto-js';
+import EmojiPicker from 'emoji-picker-react';
 
 export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
@@ -38,6 +39,8 @@ export default function ChatRoom() {
   const [showInfo, setShowInfo] = useState(false);
   const [groupInfo, setGroupInfo] = useState(null);
   const [decryptedMessages, setDecryptedMessages] = useState([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiPickerRef = useRef(null);
 
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -340,6 +343,23 @@ export default function ChatRoom() {
     }
   };
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+        setShowEmojiPicker(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const onEmojiClick = (emojiObject) => {
+    setNewMessage((prevMessage) => prevMessage + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  };
+
   return (
     <div className="flex flex-col h-screen max-w-6xl mx-auto">
       {/* Header */}
@@ -447,7 +467,7 @@ export default function ChatRoom() {
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 scrollbar-hide relative flex flex-col justify-end">
+      <div className="flex-1 overflow-y-auto p-6 scrollbar-hide">
         <div className="space-y-4">
           {decryptedMessages.map((message) => {
             // Handle system messages
@@ -510,12 +530,30 @@ export default function ChatRoom() {
             <div className="text-red-500 mb-4 text-center">{error}</div>
           )}
           <div className="flex space-x-4">
+            <div className="relative" ref={emojiPickerRef}>
+              <button
+                type="button"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                className="p-2 hover:bg-accent rounded-full transition-colors"
+              >
+                <Smile className="w-6 h-6" />
+              </button>
+              {showEmojiPicker && (
+                <div className="absolute bottom-full left-0 mb-2">
+                  <EmojiPicker
+                    onEmojiClick={onEmojiClick}
+                    width={300}
+                    height={400}
+                  />
+                </div>
+              )}
+            </div>
             <textarea
               ref={inputRef}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder={isMobile ? "Type a message..." : "Type a message... (Press Enter to send)"}
+              placeholder={isMobile ? "Type a message..." : "Type a message..."}
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
