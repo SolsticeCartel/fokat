@@ -54,7 +54,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/create-group"
+                  path="/create-chat"
                   element={
                     <PrivateRoute>
                       <CreateGroup />
@@ -62,7 +62,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="/join-group"
+                  path="/join-chat"
                   element={
                     <PrivateRoute>
                       <JoinGroup />

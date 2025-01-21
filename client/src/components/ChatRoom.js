@@ -93,7 +93,7 @@ export default function ChatRoom() {
           setIsOwner(groupData.createdBy === currentUser.uid);
           setGroupInfo(groupData);
         } else {
-          setError('This group has been deleted by the owner');
+          setError('This chat has been deleted by the admin');
           setTimeout(() => {
             navigate('/chat');
           }, 2000);
@@ -108,7 +108,7 @@ export default function ChatRoom() {
     // Subscribe to group document for deletion
     const unsubscribeGroup = onSnapshot(doc(db, 'groups', groupId), (doc) => {
       if (!doc.exists()) {
-        setError('This group has been deleted by the owner');
+        setError('This chat has been deleted by the admin');
         setTimeout(() => {
           navigate('/chat');
         }, 2000);
@@ -116,7 +116,7 @@ export default function ChatRoom() {
       }
     }, (error) => {
       if (error.code === 'permission-denied') {
-        setError('This group has been deleted by the owner');
+        setError('This chat has been deleted by the admin');
         setTimeout(() => {
           navigate('/chat');
         }, 2000);
@@ -139,7 +139,7 @@ export default function ChatRoom() {
       setMessages(newMessages);
     }, (error) => {
       if (error.code === 'permission-denied') {
-        setError('This group has been deleted by the owner');
+        setError('This chat has been deleted by the admin');
         setTimeout(() => {
           navigate('/chat');
         }, 2000);
@@ -240,7 +240,7 @@ export default function ChatRoom() {
   };
 
   const handleDeleteGroup = async () => {
-    if (!window.confirm('Are you sure you want to delete this group? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this chat? This action cannot be undone.')) {
       return;
     }
 
@@ -268,15 +268,15 @@ export default function ChatRoom() {
     } catch (error) {
       console.error('Error deleting group:', error);
       if (error.code === 'permission-denied') {
-        setError('You do not have permission to delete this group.');
+        setError('You do not have permission to delete this chat.');
       } else {
-        setError('Failed to delete group. Please try again.');
+        setError('Failed to delete chat. Please try again.');
       }
     }
   };
 
   const handleLeaveGroup = async () => {
-    if (!window.confirm('Are you sure you want to leave this group?')) {
+    if (!window.confirm('Are you sure you want to leave this chat?')) {
       return;
     }
 
@@ -285,7 +285,7 @@ export default function ChatRoom() {
       
       // Add leave message before removing the user
       await addDoc(collection(db, 'groups', groupId, 'messages'), {
-        text: `${userProfile.fullName} left the group`,
+        text: `${userProfile.fullName} left the chat`,
         createdAt: serverTimestamp(),
         type: 'system',
         event: 'leave'
@@ -301,7 +301,7 @@ export default function ChatRoom() {
       navigate('/chat');
     } catch (error) {
       console.error('Error leaving group:', error);
-      setError('Failed to leave group. Please try again.');
+      setError('Failed to leave chat. Please try again.');
     }
   };
 
@@ -356,7 +356,7 @@ export default function ChatRoom() {
             <button
               onClick={() => navigate('/chat')}
               className="p-2 hover:bg-accent rounded-full transition-colors"
-              title="Back to Groups"
+              title="Back to Chats"
             >
               <Home className="w-5 h-5" />
             </button>
@@ -369,7 +369,7 @@ export default function ChatRoom() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-card rounded-lg shadow-lg max-w-md w-full p-6 space-y-4 overflow-y-auto max-h-[90vh]">
             <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold">Group Information</h3>
+              <h3 className="text-xl font-bold">Chat Information</h3>
               <button
                 onClick={() => setShowInfo(false)}
                 className="p-1 hover:bg-accent rounded-full transition-colors"
@@ -379,15 +379,15 @@ export default function ChatRoom() {
             </div>
             <div className="space-y-3">
               <div>
-                <p className="text-sm text-muted-foreground">Group Name</p>
+                <p className="text-sm text-muted-foreground">Chat Name</p>
                 <p className="font-medium">{groupInfo.name}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Group Code</p>
+                <p className="text-sm text-muted-foreground">Chat Code</p>
                 <p className="font-medium select-all">{groupInfo.code}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Group Password</p>
+                <p className="text-sm text-muted-foreground">Chat Password</p>
                 <p className="font-medium select-all">{groupInfo.password}</p>
               </div>
               <div>

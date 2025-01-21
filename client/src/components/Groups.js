@@ -32,9 +32,9 @@ export default function Groups() {
       } catch (error) {
         console.error('Error fetching groups:', error);
         if (error.code === 'permission-denied') {
-          setError('Unable to access groups. Please try logging in again.');
+          setError('Unable to access chats. Please try logging in again.');
         } else {
-          setError('Failed to load groups. Please try again.');
+          setError('Failed to load chats. Please try again.');
         }
       } finally {
         setLoading(false);
@@ -64,27 +64,27 @@ export default function Groups() {
     <div className="max-w-4xl mx-auto p-3 sm:p-4">
       <div className="bg-card rounded-lg shadow-lg p-4 sm:p-6">
         <div className="flex flex-col-reverse sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-center sm:text-left">Your Groups</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-center sm:text-left">Your Chats</h2>
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
             <button
-              onClick={() => navigate('/create-group')}
+              onClick={() => navigate('/create-chat')}
               className="w-full sm:w-auto px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 text-sm sm:text-base"
             >
-              Create Group
+              Create Chat
             </button>
             <button
-              onClick={() => navigate('/join-group')}
+              onClick={() => navigate('/join-chat')}
               className="w-full sm:w-auto px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 text-sm sm:text-base"
             >
-              Join Group
+              Join Chat
             </button>
           </div>
         </div>
 
         {groups.length === 0 ? (
           <div className="text-center py-6 sm:py-8 text-muted-foreground">
-            <p className="text-sm sm:text-base">You haven't joined any groups yet.</p>
-            <p className="text-sm sm:text-base">Create a new group or join an existing one to start chatting!</p>
+            <p className="text-sm sm:text-base">You haven't joined any chats yet.</p>
+            <p className="text-sm sm:text-base">Create a new chat or join an existing one to start chatting!</p>
           </div>
         ) : (
           <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">

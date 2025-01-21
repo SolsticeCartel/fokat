@@ -47,7 +47,7 @@ export default function CreateGroup() {
       navigate(`/chat/${groupRef.id}`);
     } catch (error) {
       console.error('Detailed error:', error);
-      setError('Failed to create group: ' + error.message);
+      setError('Failed to create chat: ' + error.message);
       setLoading(false);
     }
   }
@@ -56,20 +56,20 @@ export default function CreateGroup() {
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="max-w-md w-full space-y-8 p-8 bg-card rounded-lg shadow-lg">
         <div>
-          <h2 className="text-3xl font-bold text-center">Create Group</h2>
+          <h2 className="text-3xl font-bold text-center">Create Chat</h2>
         </div>
         {error && <div className="text-red-500 text-center">{error}</div>}
         {success && (
           <div className="text-green-500 text-center p-4 bg-green-50 rounded-md">
             <p>{success}</p>
             <p className="text-2xl font-bold mt-2">{groupCode}</p>
-            <p className="text-sm mt-2">Share this code with people you want to join the group</p>
+            <p className="text-sm mt-2">Share this code with people you want to join the chat</p>
           </div>
         )}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div>
             <label htmlFor="group-name" className="block text-sm font-medium">
-              Group Name
+              Chat Name
             </label>
             <input
               id="group-name"
@@ -78,12 +78,12 @@ export default function CreateGroup() {
               onChange={(e) => setGroupName(e.target.value)}
               required
               className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2"
-              placeholder="Enter group name"
+              placeholder="Enter chat name"
             />
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium">
-              Group Password
+              Chat Password
             </label>
             <input
               id="password"
@@ -93,7 +93,7 @@ export default function CreateGroup() {
               required
               minLength={6}
               className="mt-1 block w-full rounded-md border border-input bg-background px-3 py-2"
-              placeholder="Enter group password"
+              placeholder="Enter chat password"
             />
             <p className="text-sm text-muted-foreground mt-1">
               Password must be at least 6 characters
@@ -104,7 +104,7 @@ export default function CreateGroup() {
             disabled={loading}
             className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-primary-foreground bg-primary hover:bg-primary/90"
           >
-            Create Group
+            Create Chat
           </button>
         </form>
       </div>
