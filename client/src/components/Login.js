@@ -31,10 +31,10 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
+    <div className="h-[calc(100vh-65px)] flex items-center justify-center bg-background">
       <div className="max-w-md w-full space-y-8 p-8 bg-card rounded-lg shadow-lg">
         <div>
-          <h2 className="text-3xl font-bold text-center">Log In</h2>
+          <h2 className="text-3xl font-bold text-center">Login</h2>
         </div>
         {error && <div className="text-red-500 text-center">{error}</div>}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
